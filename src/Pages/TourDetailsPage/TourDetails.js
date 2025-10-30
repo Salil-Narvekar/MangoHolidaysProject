@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import "./tourDetails.scss";
 import { getProductDetails, getTourPricingDetails } from "../../API/mangoholidayAPI"
 import ClipLoader from "react-spinners/ClipLoader";
@@ -402,6 +402,9 @@ const TourDetails = () => {
         }
     };
 
+    const handleScrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     useEffect(() => {
         document.body.style.overflow = modalType ? "hidden" : "auto";
@@ -545,8 +548,7 @@ const TourDetails = () => {
                                             </div>
 
                                         ) :
-                                            Array.isArray(priceDetails?.TourPricingHeaders) ?
-                                                (priceDetails.TourPricingHeaders).length > 0 &&
+                                            Array.isArray(priceDetails?.TourPricingHeaders) && (priceDetails.TourPricingHeaders).length > 0 ?
                                                 <div>
                                                     <h2>Select Tour Date</h2>
                                                     {
@@ -675,7 +677,7 @@ const TourDetails = () => {
                                                     </div>
 
                                                 ) :
-                                                    (tourDetails.highlights).length > 0 ?
+                                                    Array.isArray(tourDetails?.highlights) && (tourDetails.highlights).length > 0 ?
                                                         tourDetails.highlights.map((highlight, index) => (
                                                             <li key={index}>
                                                                 <img src="/img/list-mark.webp" alt="Icon" />
@@ -706,7 +708,7 @@ const TourDetails = () => {
                                                         <h2>Inclusions</h2>
                                                         <ul>
                                                             {
-                                                                (tourDetails.inclusions).length > 0 ?
+                                                                Array.isArray(tourDetails?.inclusions) && (tourDetails.inclusions).length > 0 ?
                                                                     tourDetails.inclusions.map((inclusion, index) => (
                                                                         <li key={index}>
                                                                             <img src="/img/list-mark.webp" alt="Icon" />
@@ -724,7 +726,7 @@ const TourDetails = () => {
                                                         <h2>Exclusions</h2>
                                                         <ul>
                                                             {
-                                                                (tourDetails.exclusions).length > 0 ?
+                                                                Array.isArray(tourDetails?.exclusions) && (tourDetails.exclusions).length > 0 ?
                                                                     tourDetails.exclusions.map((exclusion, index) => (
                                                                         <li key={index}>
                                                                             <img src="/img/list-mark.webp" alt="Icon" />
@@ -757,7 +759,7 @@ const TourDetails = () => {
                                                         <h2>Booking Instructions</h2>
                                                         <ul>
                                                             {
-                                                                (tourDetails.bookingInstructions).length > 0 ?
+                                                                Array.isArray(tourDetails?.bookingInstructions) && (tourDetails.bookingInstructions).length > 0 ?
                                                                     tourDetails.bookingInstructions.map((bookingInstruction, index) => (
                                                                         <li key={index}>
                                                                             <img src="/img/list-mark.webp" alt="Icon" />
@@ -775,7 +777,7 @@ const TourDetails = () => {
                                                         <h2>Notes</h2>
                                                         <ul>
                                                             {
-                                                                (tourDetails.notes).length > 0 ?
+                                                                Array.isArray(tourDetails?.notes) && (tourDetails.notes).length > 0 ?
                                                                     tourDetails.notes.map((note, index) => (
                                                                         <li key={index}>
                                                                             <img src="/img/list-mark.webp" alt="Icon" />
@@ -793,7 +795,7 @@ const TourDetails = () => {
                                                         <h2>Terms & Conditions</h2>
                                                         <ul>
                                                             {
-                                                                (tourDetails.termsConditions).length > 0 ?
+                                                                Array.isArray(tourDetails?.termsConditions) && (tourDetails.termsConditions).length > 0 ?
                                                                     tourDetails.termsConditions.map((termCondition, index) => (
                                                                         <li key={index}>
                                                                             <img src="/img/list-mark.webp" alt="Icon" />
@@ -812,7 +814,6 @@ const TourDetails = () => {
                                         </>
                     }
                 </div>
-
 
                 {/* Modal Popups */}
                 <div>
@@ -1106,7 +1107,43 @@ const TourDetails = () => {
                         )
                     }
                 </div>
-            </section >
+            </section>
+
+            {
+                Array.isArray(tourDetails?.RelatedProducts) && tourDetails.RelatedProducts.length > 0 && (
+                    <section className="related-prodducts-section">
+                        <h1>Related Products</h1>
+                        <div className="container">
+                            <div className="packages-grid">
+                                {
+                                    tourDetails.RelatedProducts.map((pkg) => (
+                                        <div key={pkg.ProductCode} className="package-image-container">
+                                            <div className="package-image">
+                                                <img src={pkg.ProductImage} alt="Banner Unavailable" />
+                                            </div>
+
+                                            <div className="hover-overlay">
+                                                <i className="fas fa-link fa-2x"></i>
+                                            </div>
+
+                                            <div className="package-overlay-content">
+                                                <h3>{pkg.ProductTitle}</h3>
+                                                <p>{pkg.Days} days | {pkg.Nights} nights</p>
+                                                <div className="price-bar">
+                                                    <h3>{pkg.NETINRValue && `₹ ${Number(pkg.NETINRValue).toLocaleString("en-IN")}`}</h3>
+                                                    <NavLink onClick={handleScrollToTop}>
+                                                        <p>See Details</p>
+                                                    </NavLink>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    </section>
+                )
+            }
         </>
     )
 }

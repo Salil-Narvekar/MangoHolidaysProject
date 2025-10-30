@@ -2934,4 +2934,157 @@ legend + * {
   .details-section {
     padding: 20px 20px;
   }
+}
+
+.related-prodducts-section {
+  padding: 60px 80px;
+  width: 100%;
+}
+.related-prodducts-section h1 {
+  color: #0c5728;
+  font-size: 40px;
+  text-transform: capitalize;
+  line-height: 1.2;
+  text-align: center;
+}
+@media (max-width: 480px) {
+  .related-prodducts-section h1 {
+    font-size: 30px;
+  }
+}
+.related-prodducts-section .packages-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  padding: 60px;
+}
+.related-prodducts-section .package-image-container {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.related-prodducts-section .package-image-container .package-image {
+  position: relative;
+  min-height: 250px;
+  height: 100%;
+}
+.related-prodducts-section .package-image-container .package-image img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.related-prodducts-section .package-image-container .package-image::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  z-index: 1;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.related-prodducts-section .package-image-container .hover-overlay {
+  background-color: rgba(0, 0, 0, 0.3);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+  border-radius: 16px;
+  opacity: 0;
+  z-index: 2;
+  transition: opacity 0.4s ease;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.related-prodducts-section .package-image-container .hover-overlay i {
+  color: #ffffff;
+  opacity: 0;
+  transition: all 0.3s ease 0.1s;
+}
+.related-prodducts-section .package-image-container .package-overlay-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 3;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+.related-prodducts-section .package-image-container .package-overlay-content h3 {
+  font-size: 22px;
+  padding-left: 16px;
+  font-weight: 500 !important;
+  line-height: 1.2;
+  text-transform: uppercase !important;
+}
+.related-prodducts-section .package-image-container .package-overlay-content p {
+  font-size: 14px;
+  padding-left: 16px;
+  margin-bottom: 10px;
+  font-weight: 200 !important;
+}
+.related-prodducts-section .package-image-container .package-overlay-content .price-bar {
+  background-color: #ff5f10;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px;
+}
+.related-prodducts-section .package-image-container .package-overlay-content .price-bar h3 {
+  font-size: 18px;
+  color: #ffffff;
+  font-weight: 500 !important;
+}
+.related-prodducts-section .package-image-container .package-overlay-content .price-bar p {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: #ffffff;
+  text-decoration: underline !important;
+  font-size: 14px;
+  font-weight: 200 !important;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  padding-right: 14px;
+}
+.related-prodducts-section .package-image-container .package-overlay-content .price-bar p:hover {
+  transform: scale(1.1);
+}
+@media (max-width: 1080px) {
+  .related-prodducts-section {
+    padding: 100px 80px;
+  }
+  .related-prodducts-section .packages-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .related-prodducts-section {
+    padding: 60px 20px;
+  }
+  .related-prodducts-section .packages-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .related-prodducts-section {
+    padding: 40px 10px;
+  }
+  .related-prodducts-section .packages-grid {
+    grid-template-columns: 1fr;
+  }
 }/*# sourceMappingURL=tourDetails.css.map */

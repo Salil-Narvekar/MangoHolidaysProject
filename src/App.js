@@ -1,5 +1,5 @@
 // src/App.js
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Components
 import Header from "./Components/Header/header";
@@ -23,6 +23,7 @@ import TourTalks from "./Pages/TourTalksPage/TourTalks";
 import Testimonials from "./Pages/TestimonialsPage/Testimonials";
 import BlogDetails from "./Pages/BlogDetailsPage/BlogDetails";
 import Luxetours from "./Pages/LuxetoursPage/Luxetours";
+import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 
 function App() {
   return (
@@ -49,6 +50,9 @@ function App() {
             <Route path="/blog-details/:id" element={<BlogDetails />} />
             <Route path="/packages/:tour-type/:location" element={<Packages />} />
             <Route path="/tour-details/:package-id/:package-code/:package-title" element={<TourDetails />} />
+            
+            <Route path="/404" element={<PageNotFound />} />
+            <Route path="*" element={<Navigate to="/404" />} />
           </Routes>
         </main>
 

@@ -10,7 +10,7 @@ const Footer = () => {
   const [isSectionVisible, setIsSectionVisible] = useState(true);
 
   useEffect(() => {
-    if (location.pathname === "/contact") {
+    if (location.pathname === "/contact" || location.pathname === "/page-not-found" || location.pathname === "/404") {
       setIsSectionVisible(false);
     } else {
       setIsSectionVisible(true);
