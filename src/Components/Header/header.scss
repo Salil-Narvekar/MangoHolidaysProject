@@ -169,6 +169,7 @@
       }
 
       .no-tour-text {
+        padding: 2px;
         text-align: center;
         color: $Secondary_green_color;
         font-weight: 600 !important;
@@ -263,6 +264,15 @@
       color: $primary_orange_color;
     }
   }
+
+  @media (max-width: 1080px) {
+    width: 200px;
+    height: 38px;
+
+    .search-input {
+      font-size: 14px;
+    }
+  }
 }
 
 
@@ -290,7 +300,7 @@
     padding: 8px 10px;
     height: auto;
     flex-wrap: wrap;
-    font-size: 14px;
+    font-size: 15px;
     overflow: visible;
     transition: all 0.3s ease;
   }
