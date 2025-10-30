@@ -1,7 +1,7 @@
 // src/api/mangoholidaysApi.js
 
 // ✅ Use your PHP proxy endpoint
-const PROXY_URL = "https://fetchdata.mangoholidays.in/proxy.php";
+const PROXY_URL = "https://mantra.mangoholidays.in/proxy.php";
 
 /**
  * Utility to call PHP proxy.
@@ -9,9 +9,9 @@ const PROXY_URL = "https://fetchdata.mangoholidays.in/proxy.php";
  * @param {object} params - Query params
  */
 async function fetchFromProxy(endpoint, params = {}) {
-    const url = `${PROXY_URL}?endpoint=${encodeURIComponent(
-        endpoint
-    )}&params=${encodeURIComponent(JSON.stringify(params))}`;
+    const url = `${PROXY_URL}?endpoint=${encodeURIComponent(endpoint)}&params=${encodeURIComponent(
+        JSON.stringify(params)
+    )}`;
 
     console.log("🌐 FETCH VIA PROXY:", url);
 
@@ -20,9 +20,7 @@ async function fetchFromProxy(endpoint, params = {}) {
 
         if (!response.ok) {
             const text = await response.text();
-            throw new Error(
-                `Proxy Error: ${response.status} ${response.statusText} | ${text}`
-            );
+            throw new Error(`Proxy Error: ${response.status} ${response.statusText} | ${text}`);
         }
 
         const data = await response.json();
@@ -35,10 +33,7 @@ async function fetchFromProxy(endpoint, params = {}) {
 
 // --- 1️⃣ Get Product List ---
 export async function getProductList(params) {
-    console.log(
-        "📦 Calling GetProductListBySectorForWebsite with params:",
-        params
-    );
+    console.log("📦 Calling GetProductListBySectorForWebsite with params:", params);
     return await fetchFromProxy("GetProductListBySectorForWebsite", params);
 }
 
