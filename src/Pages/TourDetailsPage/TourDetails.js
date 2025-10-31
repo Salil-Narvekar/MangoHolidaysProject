@@ -29,7 +29,7 @@ const navbar = [
 ]
 
 const TourDetails = () => {
-    const { "package-id": packageId, "package-code": packageCode, "package-title": packageTitle } = useParams();
+    const { "product-id": productId, "product-code": productCode, "product-title": packageTitle } = useParams();
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     const [modalType, setModalType] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -41,17 +41,17 @@ const TourDetails = () => {
 
     // Tour's Details API Extraction
     useEffect(() => {
-        if (!packageId || !packageCode) return;
+        if (!productId || !productCode) return;
 
         async function fetchTourDetails() {
             setLoading(true);
 
             try {
                 const data = await getProductDetails(
-                    String(packageId),
-                    String(packageCode)
+                    String(productId),
+                    String(productCode)
                 );
-                // console.log("Raw Tour details: ",data)
+                console.log("Raw Tour details: ", data)
 
                 if (!data || data.StatusCode !== "200" || data.StatusMessage === "Product not found") {
                     console.warn("Invalid response or no data found");
@@ -59,21 +59,30 @@ const TourDetails = () => {
                     return;
                 }
 
-                const updatedUpcomingTours = Array.isArray(data?.UpcomingTours) ? data.UpcomingTours.map((detail) => {
-                    if (!detail?.ArrivalDate) return detail;
+                const today = new Date();
+                const updatedUpcomingTours = Array.isArray(data?.UpcomingTours) ? data.UpcomingTours
+                    .map((detail) => {
+                        if (!detail?.ArrivalDate) return null;
 
-                    // Handle "DD/MM/YYYY" format safely
-                    const [day, month, year] = detail.ArrivalDate.split("/").map(Number);
-                    const dateObj = new Date(year, month - 1, day);
+                        const [day, month, year] = detail.ArrivalDate.split("/").map(Number);
+                        const dateObj = new Date(year, month - 1, day);
 
-                    return {
-                        ...detail,
-                        BookingDateFromMonth: dateObj.toLocaleString("en-US", { month: "short" }), // e.g. "Apr"
-                        BookingDateFromYear: dateObj.getFullYear(),                                // e.g. 2026
-                        BookingDateFromDay: dateObj.getDate(),                                     // e.g. 15
-                        BookingDateFromDayName: dateObj.toLocaleString("en-US", { weekday: "short" }) // e.g. "Wed"
-                    };
-                }) : [];
+                        return {
+                            ...detail,
+                            ArrivalDateObj: dateObj,
+                            BookingDateFromMonth: dateObj.toLocaleString("en-US", { month: "short" }), // e.g. "Apr"
+                            BookingDateFromYear: dateObj.getFullYear(), // e.g. 2026
+                            BookingDateFromDay: dateObj.getDate(), // e.g. 15
+                            BookingDateFromDayName: dateObj.toLocaleString("en-US", { weekday: "short" }), // e.g. "Wed"
+                        };
+                    })
+
+                    // Keep only tours whose ArrivalDate is *after* today
+                    .filter((tour) => tour && tour.ArrivalDateObj > today)
+
+                    // Sort chronologically (optional, newest first)
+                    .sort((a, b) => a.ArrivalDateObj - b.ArrivalDateObj)
+                    : [];
 
 
                 const extractedDetails = {
@@ -130,7 +139,7 @@ const TourDetails = () => {
                         ? data.AirTravelInstructions.map((a) => a?.AirTravelInstructionItem)
                         : [],
 
-                    // iternary mapped array
+                    // Iternary array
                     ProductItineraryByDay: Array.isArray(data?.ProductItineraryByDay)
                         ? data.ProductItineraryByDay.flatMap((day) =>
                             Array.isArray(day?.ProductItineraryByDayItem)
@@ -151,7 +160,6 @@ const TourDetails = () => {
                                 : []
                         )
                         : [],
-
                 };
 
                 // console.log("Extracted Tour Details:", data);
@@ -165,7 +173,7 @@ const TourDetails = () => {
         }
 
         fetchTourDetails();
-    }, [packageId, packageCode]);
+    }, [productId, productCode]);
 
 
     // --- Price Details API Extraction ---
@@ -1110,7 +1118,7 @@ const TourDetails = () => {
                                                 <h3>{pkg.ProductTitle}</h3>
                                                 <p>{pkg.Days} days | {pkg.Nights} nights</p>
                                                 <div className="price-bar">
-                                                    <h3>{pkg.NETINRValue && `₹ ${Number(pkg.NETINRValue).toLocaleString("en-IN")}`}</h3>
+                                                    <h3>{pkg.LowestTwinSharingPrice && `₹ ${Number(pkg.LowestTwinSharingPrice).toLocaleString("en-IN")}`}</h3>
                                                     <NavLink
                                                         to={`/tour-details/${pkg.ProductID}/${pkg.ProductCode}/${pkg.ProductTitle.toLowerCase().replace(/\s+/g, "-")}`}
                                                         onClick={handleScrollToTop}

@@ -86,9 +86,7 @@ const Packages = () => {
     // API Calling function
     useEffect(() => {
         async function fetchTours() {
-
-            // prevent running when params aren’t ready
-            if (!currentProductType || !tourLocation) return;
+            if (!currentProductType || !tourLocation || !tourType) return;
             setLoading(true);
 
             try {
@@ -96,7 +94,7 @@ const Packages = () => {
                     ProductType: currentProductType,
                     SectorName: tourLocation,
                 });
-                // console.log("Fetched Data:", data, currentProductType, tourLocation);
+                // console.log("Raw Data:", data, currentProductType, tourLocation, tourType);
 
                 if (!data?.ProductList || !Array.isArray(data.ProductList)) {
                     console.warn("No tours found or invalid data structure");
@@ -104,10 +102,26 @@ const Packages = () => {
                     return;
                 }
 
+                const today = new Date();
                 // Group by SectorName
                 const groupedData = data.ProductList.reduce((acc, item) => {
-                    const { SectorName, ProductID, ProductCode, ProductTitle, Days, Nights, ProductPricingHeader, ProductImage } = item;
-                    const netINRValue = ProductPricingHeader?.[0]?.ProductPricingDetail?.[0]?.NETINRValue || null;
+                    const { SectorName, ProductID, ProductCode, ProductTitle, Days, Nights, ProductPricingHeader, ProductImage, TravelType } = item;
+                    let matchedNetINRValue = null;
+
+                    if (Array.isArray(ProductPricingHeader)) {
+                        for (const header of ProductPricingHeader) {
+                            const fromParts = header.TourDateFrom?.split("/") || [];
+                            const toParts = header.TourDateTo?.split("/") || [];
+
+                            const fromDate = new Date(`${fromParts[2]}-${fromParts[1]}-${fromParts[0]}`);
+                            const toDate = new Date(`${toParts[2]}-${toParts[1]}-${toParts[0]}`);
+
+                            if (today >= fromDate && today <= toDate) {
+                                matchedNetINRValue = header?.ProductPricingDetail?.[0]?.NETINRValue ?? null;
+                                break;
+                            }
+                        }
+                    }
 
                     if (!acc[SectorName]) acc[SectorName] = [];
                     acc[SectorName].push({
@@ -118,7 +132,9 @@ const Packages = () => {
                         Days,
                         Nights,
                         ProductImage,
-                        NETINRValue: netINRValue,
+                        ProductPricingHeader,
+                        NETINRValue: matchedNetINRValue,
+                        TravelType,
                     });
 
                     return acc;
@@ -130,8 +146,15 @@ const Packages = () => {
                     tours: groupedData[sector],
                 }));
 
-                // console.log("Grouped Tours:", groupedArray[0].tours);
-                setTourPackages(groupedArray[0]?.tours || []);
+                let toursToShow = groupedArray[0]?.tours || [];
+                if (tourType === "Internation Tour") {
+                    toursToShow = toursToShow.filter((tour) => tour.TravelType === "GIT");
+                } else if (tourType === "Customized Tour") {
+                    toursToShow = toursToShow.filter((tour) => tour.TravelType === "FIT");
+                }
+
+                console.log("Grouped Tours:", toursToShow.length, toursToShow);
+                setTourPackages(toursToShow);
 
             } catch (err) {
                 console.error("Failed to load products:", err.message);
@@ -142,7 +165,7 @@ const Packages = () => {
         }
 
         fetchTours();
-    }, [currentProductType, tourLocation]);
+    }, [currentProductType, tourLocation, tourType]);
 
     return (
         <>

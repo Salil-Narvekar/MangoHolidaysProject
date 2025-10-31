@@ -49,7 +49,7 @@ function App() {
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blog-details/:id" element={<BlogDetails />} />
             <Route path="/packages/:tour-type/:location" element={<Packages />} />
-            <Route path="/tour-details/:package-id/:package-code/:package-title" element={<TourDetails />} />
+            <Route path="/tour-details/:product-id/:product-code/:product-title" element={<TourDetails />} />
             
             <Route path="/404" element={<PageNotFound />} />
             <Route path="*" element={<Navigate to="/404" />} />
