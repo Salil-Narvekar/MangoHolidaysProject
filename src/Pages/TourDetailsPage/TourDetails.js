@@ -38,12 +38,10 @@ const TourDetails = () => {
     const [modalPricingDetails, setModalPricingDetails] = useState([]);
     const [loading, setLoading] = useState(true);
 
-
+    // Tour's Details API Extraction
     useEffect(() => {
         if (!packageId || !packageCode) return;
 
-
-        // Tour's Details Extraction
         async function fetchTourDetails() {
             setLoading(true);
 
@@ -52,8 +50,9 @@ const TourDetails = () => {
                     String(packageId),
                     String(packageCode)
                 );
+                // console.log(data)
 
-                if (!data || data.StatusCode !== "200") {
+                if (!data || data.StatusCode !== "200" || data.StatusMessage === "Product not found") {
                     console.warn("Invalid response or no data found");
                     setTourDetails([]);
                     return;
@@ -146,8 +145,14 @@ const TourDetails = () => {
             }
         }
 
+        fetchTourDetails();
+    }, [packageId, packageCode]);
 
-        // --- Price Details Extraction ---
+
+    // --- Price Details API Extraction ---
+    useEffect(() => {
+        if (!packageId || !packageCode) return;
+
         async function fetchPriceDetails() {
             setLoading(true);
             try {
@@ -257,7 +262,6 @@ const TourDetails = () => {
             }
         }
 
-        fetchTourDetails();
         fetchPriceDetails();
     }, [packageId, packageCode]);
 
@@ -428,7 +432,7 @@ const TourDetails = () => {
                                 </div>
                                 :
                                 <>
-                                    <h2 className="package-title">{tourDetails.ProductTitle}</h2>
+                                    <h2 className="package-title">{tourDetails.ProductTitle ? tourDetails?.ProductTitle : "--"}</h2>
                                     <h3 className="package-duration">{tourDetails.Nights} Nights | {tourDetails.Days} Days</h3>
                                 </>
                         }
@@ -482,7 +486,7 @@ const TourDetails = () => {
                                             </div>
 
                                         ) :
-                                            Array.isArray(tourDetails?.ProductItineraryByDay) ?
+                                            Array.isArray(tourDetails?.ProductItineraryByDay) && (tourDetails?.ProductItineraryByDay).length > 0 ?
                                                 tourDetails.ProductItineraryByDay.map((iternary, index) => (
                                                     <div className="card-objects" key={index}>
                                                         <div className="circles">
@@ -509,7 +513,8 @@ const TourDetails = () => {
                                                             }
                                                         </div>
                                                     </div>
-                                                )) :
+                                                ))
+                                                :
                                                 (
                                                     <div className="data-unavailable-banner">
                                                         <img src="/img/data-not-available.webp" alt="No Data available" />
@@ -1131,7 +1136,10 @@ const TourDetails = () => {
                                                 <p>{pkg.Days} days | {pkg.Nights} nights</p>
                                                 <div className="price-bar">
                                                     <h3>{pkg.NETINRValue && `₹ ${Number(pkg.NETINRValue).toLocaleString("en-IN")}`}</h3>
-                                                    <NavLink onClick={handleScrollToTop}>
+                                                    <NavLink
+                                                        to={`/tour-details/${pkg.ProductID}/${pkg.ProductCode}/${pkg.ProductTitle.toLowerCase().replace(/\s+/g, "-")}`}
+                                                        onClick={handleScrollToTop}
+                                                    >
                                                         <p>See Details</p>
                                                     </NavLink>
                                                 </div>

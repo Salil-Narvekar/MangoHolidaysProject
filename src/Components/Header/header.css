@@ -1987,6 +1987,7 @@ legend + * {
   margin-right: 8px;
 }
 .nav-item.dropdown .dropdown-menu li .no-tour-text {
+  padding: 2px;
   text-align: center;
   color: #0c5728;
   font-weight: 600 !important;
@@ -2062,6 +2063,15 @@ legend + * {
   background-color: #f2f2f2;
   color: #ff5f10;
 }
+@media (max-width: 1080px) {
+  .search-bar-container {
+    width: 200px;
+    height: 38px;
+  }
+  .search-bar-container .search-input {
+    font-size: 14px;
+  }
+}
 
 /* Hamburger Button */
 .menu-toggle {
@@ -2086,7 +2096,7 @@ legend + * {
     padding: 8px 10px;
     height: auto;
     flex-wrap: wrap;
-    font-size: 14px;
+    font-size: 15px;
     overflow: visible;
     transition: all 0.3s ease;
   }

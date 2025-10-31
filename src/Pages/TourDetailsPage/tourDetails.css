@@ -2290,6 +2290,7 @@ legend + * {
   padding: 10px;
   padding-left: 45px;
   width: 100%;
+  min-height: 120px;
 }
 .details-section .content .iternary-details .iternary-cards-container .card-objects .day-details h2 {
   color: #0c5728;
@@ -2956,7 +2957,7 @@ legend + * {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  padding: 60px;
+  padding: 60px 0px;
 }
 .related-prodducts-section .package-image-container {
   position: relative;

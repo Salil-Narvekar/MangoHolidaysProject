@@ -16,165 +16,169 @@ if (typeof window !== "undefined" && !window.Buffer) {
 const importAll = (r) => r.keys().map(r);
 const markdownFiles = importAll(require.context("../../BlogsMdFiles", false, /\.md$/));
 
-// Dummy banner data (replace with your actual image paths and content)
+
+// Add / Update your Banners here (Add the static links for navigation here in "navigationLink" key as either "india-tour/xyz" / "internation-tour/xyz")
 const bannerData = [
   {
     id: 1,
     image: "/img/home-banner.webp",
     title: "JAPAN 2025",
-    subtitle: "Say Konnichiwa Japan with us!"
+    subtitle: "Say Konnichiwa Japan with us!",
+    navigationLink: "internation-tour/japan"
   },
   {
     id: 2,
     image: "/img/home-banner.webp",
     title: "Vietnem",
-    subtitle: "Whatever you travel for, you will find it here!"
-  }
+    subtitle: "Whatever you travel for, you will find it here!",
+    navigationLink: "internation-tour/vietnam-cambodia"
+  },
   // Add more banner objects as needed
 ];
 
 
-// Add or Update the BEST SELLING TOURS here
+// Add or Update the BEST SELLING TOURS here (Add the static links for navigation here in "navigationLink" key)
 const best_selling = [
   {
+    navigationLink: "503/SAM4/mysteries-of-south-america",
     img: "/img/BestSelling/South-American-mysteries.jpg",
-    link: "/packages",
-    title: "South American Mysteries",
+    ProductTitle: "MYSTERIES OF SOUTH AMERICA",
     days: '18',
     nights: '17'
   },
   {
+    navigationLink: "280/DX5/super-saver-dubai-vacation",
     img: "/img/BestSelling/Dubai-Dreams.jpg",
-    link: "/packages",
-    title: "Dubai Dreams",
+    ProductTitle: "Dubai Dreams",
     days: '5',
     nights: '4'
   },
   {
+    navigationLink: "513/GE/glimpses-of-europe",
     img: "/img/BestSelling/Glimpses-of-europe.jpg",
-    link: "/packages",
-    title: "Glimpses of Europe",
+    ProductTitle: "Glimpses of Europe",
     days: '14',
     nights: '13'
   },
   {
+    navigationLink: "478/V2/vietnam-cambodia",
     img: "/img/BestSelling/Vietnam-Combodia.jpg",
-    link: "/packages",
-    title: "Vietnam Cambodia",
+    ProductTitle: "Vietnam Cambodia",
     days: '8',
     nights: '7'
   },
   {
+    navigationLink: "#",
     img: "/img/BestSelling/Northern-Lights.webp",
-    link: "/packages",
-    title: "Northern Lights",
+    ProductTitle: "Northern Lights",
     days: '9',
     nights: '8'
   },
   {
+    navigationLink: "#",
     img: "/img/BestSelling/South-africa-with-kruger.jpg",
-    link: "/packages",
-    title: "South Africa with Kruger",
+    ProductTitle: "South Africa with Kruger",
     days: '15',
     nights: '14'
   },
   {
+    navigationLink: "11/D1/dubai-abu-dhabi",
     img: "/img/BestSelling/Dubai-Abu-dhabi.jpg",
-    link: "/packages",
-    title: "Dubai Abu Dhabi",
+    ProductTitle: "Dubai Abu Dhabi",
     days: '6',
     nights: '5'
   },
   {
+    navigationLink: "522/S3/south-african-safari",
     img: "/img/BestSelling/South-africa-Safari.webp",
-    link: "/packages",
-    title: "South African Safari",
+    ProductTitle: "South African Safari",
     days: '10',
     nights: '9'
   },
   {
+    navigationLink: "5/E1/exotic-Europe",
     img: "/img/BestSelling/Exotic-Europe.jpg",
-    link: "/packages",
-    title: "Exotic Europe",
+    ProductTitle: "Exotic Europe",
     days: '18',
     nights: '17'
   }
 ];
 
 
-// Add or Update the UPCOMMING INTERNATIONAL TOURS here
+// Add or Update the UPCOMMING INTERNATIONAL TOURS here (Add the static links for navigation here in "navigationLink" key)
 const upcoming_international_tours = [
   {
+    navigationLink: "#",
     img: "/img/LuxeHolidays/Russia-with-northern-lights.jpg",
-    link: "/packages",
-    title: "Russia with Northern lights"
+    ProductTitle: "Russia with Northern lights"
   },
   {
+    navigationLink: "#",
     img: "/img/LuxeHolidays/Iceland-with-northern-lights.jpg",
-    link: "/packages",
-    title: "Iceland with Northern lights"
+    ProductTitle: "Iceland with Northern lights"
   },
   {
+    navigationLink: "503/SAM4/mysteries-of-south-america",
     img: "/img/LuxeHolidays/South-American-mysteries.jpg",
-    link: "/packages",
-    title: "South American Mysteries"
+    ProductTitle: "Mysteries of South America"
   },
   {
+    navigationLink: "535/KM1/kenyan-migration",
     img: "/img/LuxeHolidays/Africa-with-Kenyan-Migration.webp",
-    link: "/packages",
-    title: "Africa with Kenyan Migration"
+    ProductTitle: "Africa with Kenyan Migration"
   },
   {
+    navigationLink: "#",
     img: "/img/LuxeHolidays/northern-Lights.webp",
-    link: "/packages",
-    title: "Northern Lights"
+    ProductTitle: "Northern Lights"
   },
   {
+    navigationLink: "#",
     img: "/img/LuxeHolidays/South-africa-with-Kruger.jpg",
-    link: "/packages",
-    title: "South Africa with Kruger"
+    ProductTitle: "South Africa with Kruger"
   },
   {
+    navigationLink: "16/A1/new-zealand-Australia",
     img: "/img/LuxeHolidays/Australia-Newzealand.jpg",
-    link: "/packages",
-    title: "Australia New Zealand"
+    ProductTitle: "Australia New Zealand"
   }
 ];
 
 
-// Add or Update the POPULAR POCKET FRIENDLY Tours here
+// Add or Update the POPULAR POCKET FRIENDLY Tours here (Add the static links for navigation here in "navigationLink" key)
 const pocket_friendly_tours = [
   {
+    navigationLink: "#",
     img: "/img/PocketFriendlyTours/Russia-with-northern-lights.jpg",
-    title: "Russia with Northern lights",
-    link: "#",
+    ProductTitle: "Russia with Northern lights"
   },
   {
+    navigationLink: "478/V2/vietnam-cambodia",
     img: "/img/PocketFriendlyTours/Vietnam-Cambodia.jpg",
-    title: "Vietnam Cambodia",
-    link: "#",
+    ProductTitle: "Vietnam Cambodia"
   },
   {
+    navigationLink: "#",
     img: "/img/PocketFriendlyTours/South-africa-with-kruger.jpg",
-    title: "South Africa with kruger",
-    link: "#",
+    ProductTitle: "South Africa with kruger"
   },
   {
+    navigationLink: "513/GE/glimpses-of-europe",
     img: "/img/PocketFriendlyTours/Glimpses-of-europe.jpg",
-    title: "Glimpses of Europe",
-    link: "#",
+    ProductTitle: "Glimpses of Europe"
   },
   {
+    navigationLink: "280/DX5/super-saver-dubai-vacation",
     img: "/img/PocketFriendlyTours/Dubai-Dreams.jpg",
-    title: "Dubai Dreams",
-    link: "#",
+    ProductTitle: "Dubai Dreams"
   },
   {
+    navigationLink: "503/SAM4/mysteries-of-south-america",
     img: "/img/PocketFriendlyTours/South-American-mysteries.jpg",
-    title: "South American Mysteries",
-    link: "#",
+    ProductTitle: "Mysteries of South America"
   }
 ];
+
 
 // Add or Update the youtube videos here
 const videos = [
@@ -203,6 +207,7 @@ const videos = [
     video: "https://youtu.be/SJTkhsxb2bo",
   },
 ];
+
 
 const Home = () => {
   const swiperRef = useRef(null); // Ref for Swiper instance
@@ -258,9 +263,16 @@ const Home = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const goToTourDetails = (title) => {
-    console.log(title)
-    navigate(`/packages/${title}`);
+  const goToTourDetails = (navLink) => {
+    // console.log(`/tour-details/${navLink}`)
+    handleScrollToTop()
+    navigate(`/tour-details/${navLink}`);
+  }
+
+  const gotoPackagesPage = (navLink) => {
+    // console.log(`/packages/${navLink}`)
+    handleScrollToTop()
+    navigate(`/packages/${navLink}`);
   }
 
   const openModal = () => {
@@ -338,8 +350,8 @@ const Home = () => {
                     <img src={banner.image} alt="Banner Unavailable" />
                   </div>
 
-                  <div className="banner-overlay">
-                    <h1 onClick={() => goToTourDetails(banner.title)}>{banner.title}</h1>
+                  <div className="banner-overlay" onClick={() => gotoPackagesPage(banner.navigationLink)}>
+                    <h1>{banner.title}</h1>
                     <h2>{banner.subtitle}</h2>
                     <div className="global-experience-badge">
                       <img src="/img/global-experience-local-comfort.webp" alt="" />
@@ -406,12 +418,12 @@ const Home = () => {
                       <img src={slide.img} alt="Banner Unavailable" />
                     </div>
 
-                    <div className="hover-overlay" onClick={() => goToTourDetails(slide.link)}>
+                    <div className="hover-overlay" onClick={() => goToTourDetails(slide.navigationLink)}>
                       <i className="fas fa-link fa-2x"></i>
                     </div>
 
                     <div className="best-selling-overlay-content">
-                      <h3>{slide.title}</h3>
+                      <h3>{slide.ProductTitle}</h3>
                       <p>{slide.days} days | {slide.nights} nights</p>
                     </div>
                   </div>
@@ -456,11 +468,11 @@ const Home = () => {
                       <img src={slide.img} alt="Banner Unavailable" />
                     </div>
 
-                    <div className="hover-overlay" onClick={() => goToTourDetails(slide.link)}>
+                    <div className="hover-overlay" onClick={() => goToTourDetails(slide.navigationLink)}>
                       <i className="fas fa-link fa-2x"></i>
                     </div>
 
-                    <h3>{slide.title}</h3>
+                    <h3>{slide.ProductTitle}</h3>
                   </div>
                 </SwiperSlide>
               ))
@@ -502,10 +514,10 @@ const Home = () => {
           >
             {pocket_friendly_tours.map((slide, index) => (
               <SwiperSlide key={index}>
-                <div className="slide-card">
-                  <a href={slide.link} className="img-container">
-                    <img src={slide.img} alt={slide.title} />
-                  </a>
+                <div className="slide-card" >
+                  <div className="img-container" onClick={() => goToTourDetails(slide.navigationLink)}>
+                    <img src={slide.img} alt={slide.ProductTitle} />
+                  </div>
                   <p>{slide.title}</p>
                 </div>
               </SwiperSlide>

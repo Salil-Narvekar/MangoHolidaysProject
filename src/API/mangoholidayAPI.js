@@ -1,7 +1,7 @@
 // src/api/mangoholidaysApi.js
 
 // ✅ Use your PHP proxy endpoint
-const PROXY_URL = "https://mantra.mangoholidays.in/proxy.php";
+const PROXY_URL = "https://mangoholidays.in/proxy.php";
 
 /**
  * Utility to call PHP proxy.
@@ -33,20 +33,20 @@ async function fetchFromProxy(endpoint, params = {}) {
 
 // --- 1️⃣ Get Product List ---
 export async function getProductList(params) {
-    console.log("📦 Calling GetProductListBySectorForWebsite with params:", params);
+    // console.log("📦 Calling GetProductListBySectorForWebsite with params:", params);
     return await fetchFromProxy("GetProductListBySectorForWebsite", params);
 }
 
 // --- 2️⃣ Get Product Details ---
 export async function getProductDetails(productID, productCode) {
     const params = { ProductID: productID, ProductCode: productCode };
-    console.log("🧾 Calling GetProductForWebsite with params:", params);
+    // console.log("🧾 Calling GetProductForWebsite with params:", params);
     return await fetchFromProxy("GetProductForWebsite", params);
 }
 
 // --- 3️⃣ Get Tour Pricing Details ---
 export async function getTourPricingDetails(tourDetailID, tourCode) {
     const params = { TourDetailID: tourDetailID, TourCode: tourCode };
-    console.log("💰 Calling GetTourPricingDetailForWebsite with params:", params);
+    // console.log("💰 Calling GetTourPricingDetailForWebsite with params:", params);
     return await fetchFromProxy("GetTourPricingDetailForWebsite", params);
 }

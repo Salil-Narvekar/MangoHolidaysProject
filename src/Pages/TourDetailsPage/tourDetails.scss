@@ -468,6 +468,7 @@
                         padding: 10px;
                         padding-left: 45px;
                         width: 100%;
+                        min-height: 120px;
 
                         h2 {
                             color: $Secondary_green_color;
@@ -1237,7 +1238,7 @@
         display: grid;
         grid-template-columns: repeat(4, 1fr);
         gap: 20px;
-        padding: 60px;
+        padding: 60px 0px;
     }
 
     .package-image-container {

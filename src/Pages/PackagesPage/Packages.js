@@ -111,6 +111,7 @@ const Packages = () => {
 
                     if (!acc[SectorName]) acc[SectorName] = [];
                     acc[SectorName].push({
+                        SectorName,
                         ProductID,
                         ProductCode,
                         ProductTitle,
@@ -151,7 +152,7 @@ const Packages = () => {
                     <img src="/img/exotic-europe-banner.webp" alt="Banner Unavailable" />
                 </div>
                 <div className="banner-overlay-packages">
-                    <h1 className='banner-title-packages'>{tourLocation} {tourType}</h1>
+                    <h1 className='banner-title-packages'>{tourPackages[0]?.SectorName ? tourPackages[0]?.SectorName : ""} {tourType}</h1>
                 </div>
             </section>
 

@@ -1859,9 +1859,9 @@ legend + * {
      object-fit: cover;
   display: block;
 }
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   .banner-section-packages .img-container-packages img {
-    aspect-ratio: 3/2;
+    aspect-ratio: 3/1;
   }
 }
 @media (max-width: 768px) {
@@ -2032,6 +2032,7 @@ legend + * {
 .packages-cards-section .package-image-container .package-overlay-content h3 {
   font-size: 22px;
   padding-left: 16px;
+  padding-right: 2px;
   font-weight: 500 !important;
   line-height: 1.2;
   text-transform: uppercase !important;
