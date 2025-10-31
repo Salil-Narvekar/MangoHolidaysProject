@@ -11,44 +11,33 @@ const Header = () => {
   const [indiaToursList, setIndiaToursList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // NEW: which dropdown is open (null | 'international' | 'india' | 'customized')
+  const [openDropdown, setOpenDropdown] = useState(null);
+
   useEffect(() => {
     async function fetchTours() {
       try {
-        
-        // --- WORLD TOURS --- 
         const worldParams = { ProductType: "World" };
         const worldData = await getProductList(worldParams);
 
-        // --- Fetch International Tours (GIT) ---
         const internationalTours = worldData.ProductList.filter(item => item.TravelType === "GIT");
         const gitSectors = internationalTours.map(item => item.SectorName);
         const uniqueGitSectors = [...new Set(gitSectors)].sort((a, b) => a.localeCompare(b));
         setInternationalToursList(uniqueGitSectors);
-        // console.log("International Sectors:", uniqueGitSectors, uniqueGitSectors.length);
 
-        // --- Fetch Customized Tours (FIT) ---
         const customizedTours = worldData.ProductList.filter(item => item.TravelType === "FIT");
         const fitSectors = customizedTours.map(item => item.SectorName);
         const uniqueFitSectors = [...new Set(fitSectors)].sort((a, b) => a.localeCompare(b));
         setCustomizedToursList(uniqueFitSectors);
-        // console.log("Customized Sectors:", uniqueFitSectors, uniqueFitSectors.length);
 
-
-        // --- INDIA TOURS ---
         const indiaParams = { ProductType: "India" };
         const indiaData = await getProductList(indiaParams);
-
         const indiaSectors = indiaData.ProductList.map((item) => item.SectorName);
         const uniqueIndiaSectors = [...new Set(indiaSectors)].sort((a, b) => a.localeCompare(b));
         setIndiaToursList(uniqueIndiaSectors);
-        // console.log("India Sectors:", uniqueIndiaSectors);
-
       } catch (err) {
-        // 4. Catch any errors thrown by the API function
         console.error('Failed to load products in component:', err.message);
-
       } finally {
-        // 5. Stop loading regardless of success or failure
         setLoading(false);
       }
     }
@@ -58,12 +47,35 @@ const Header = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-  const closeMenu = () => setMenuOpen(false);
+  const toggleMenu = () => {
+    setMenuOpen(prev => !prev);
+    // optionally close dropdown when closing the menu
+    if (menuOpen) setOpenDropdown(null);
+  };
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setOpenDropdown(null);
+  };
 
   const handleScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  // NEW: central dropdown toggle
+  const toggleDropdown = (name, e) => {
+    e.stopPropagation();
+    handleScrollToTop();
+
+    // For mobile (<= 992) and desktop both, we rely on state
+    setOpenDropdown(prev => (prev === name ? null : name));
+  };
+
+  // NEW: close dropdown on outside click
+  useEffect(() => {
+    const handleDocClick = () => setOpenDropdown(null);
+    document.addEventListener("click", handleDocClick);
+    return () => document.removeEventListener("click", handleDocClick);
+  }, []);
 
   return (
     <header className={`header-container ${menuOpen ? "menu-open" : ""}`}>
@@ -77,7 +89,7 @@ const Header = () => {
       </div>
 
       {/* Hamburger Button */}
-      <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu">
+      <button className="menu-toggle" onClick={toggleMenu} aria-label="Toggle menu" aria-expanded={menuOpen}>
         <FaBars />
       </button>
 
@@ -86,36 +98,29 @@ const Header = () => {
         <ul className="nav-links">
           <li className="nav-item">
             <NavLink to="/" onClick={() => { closeMenu(); handleScrollToTop(); }}
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              className={({ isActive }) => isActive && openDropdown === null ? "nav-link active" : "nav-link"}>
               Home
             </NavLink>
           </li>
 
-
+          
           {/* Dropdown 1 */}
           <li className="nav-item dropdown">
             <button
-              className="nav-link"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleScrollToTop();
-                if (window.innerWidth <= 992) {
-                  const dropdown = e.currentTarget.nextElementSibling;
-                  dropdown.classList.toggle("show");
-                  e.currentTarget.classList.toggle("open");
-                }
-              }}
+              className={`nav-link ${openDropdown === 'international' ? 'open active ' : ''}`}
+              aria-expanded={openDropdown === 'international'}
+              aria-haspopup="true"
+              onClick={(e) => toggleDropdown('international', e)}
             >
               International Tours <i className="fa-solid fa-chevron-down"></i>
             </button>
 
-            <ul className="dropdown-menu">
+            <ul className={`dropdown-menu ${openDropdown === 'international' ? 'show' : ''}`}>
               {
                 loading ? (
-                  <div className="loader-container-tour-details">
+                  <div className="loader-container-header">
                     <ClipLoader color="#ff5f10" loading={loading} size={100} />
                   </div>
-
                 ) :
 
                   internationalToursList.length > 0 ?
@@ -145,37 +150,27 @@ const Header = () => {
           {/* Dropdown 2 */}
           <li className="nav-item dropdown">
             <button
-              className="nav-link"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleScrollToTop();
-                if (window.innerWidth <= 992) {
-                  const dropdown = e.currentTarget.nextElementSibling;
-                  dropdown.classList.toggle("show");
-                  e.currentTarget.classList.toggle("open");
-                }
-              }}
+              className={`nav-link ${openDropdown === 'india' ? 'open active' : ''}`}
+              aria-expanded={openDropdown === 'india'}
+              aria-haspopup="true"
+              onClick={(e) => toggleDropdown('india', e)}
             >
               India Tours <i className="fa-solid fa-chevron-down"></i>
             </button>
 
-            <ul className={`dropdown-menu ${indiaToursList && indiaToursList.length > 0 ? "show" : "empty"}`}>
+            <ul className={`dropdown-menu ${openDropdown === 'india' ? 'show' : ''}`}>
               {
                 loading ? (
-                  <div className="loader-container-tour-details">
+                  <div className="loader-container-header">
                     <ClipLoader color="#ff5f10" loading={loading} size={100} />
                   </div>
-
                 ) :
 
                   indiaToursList.length > 0 ?
                     indiaToursList.map((tour, index) => (
                       <li key={index}>
                         <NavLink
-                          // to={`/package-details/${tour.ProductID}/${tour.ProductCode}`}
-                          to={`packages/india-tour/${tour
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
+                          to={`packages/india-tour/${tour.toLowerCase().replace(/\s+/g, "-")}`}
                           onClick={() => {
                             closeMenu();
                             handleScrollToTop();
@@ -198,24 +193,18 @@ const Header = () => {
           {/* Dropdown 3 */}
           <li className="nav-item dropdown">
             <button
-              className="nav-link"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleScrollToTop();
-                if (window.innerWidth <= 992) {
-                  const dropdown = e.currentTarget.nextElementSibling;
-                  dropdown.classList.toggle("show");
-                  e.currentTarget.classList.toggle("open");
-                }
-              }}
+              className={`nav-link ${openDropdown === 'customized' ? 'open active' : ''}`}
+              aria-expanded={openDropdown === 'customized'}
+              aria-haspopup="true"
+              onClick={(e) => toggleDropdown('customized', e)}
             >
               Customized Tours <i className="fa-solid fa-chevron-down"></i>
             </button>
 
-            <ul className="dropdown-menu">
+            <ul className={`dropdown-menu ${openDropdown === 'customized' ? 'show' : ''}`}>
               {
                 loading ? (
-                  <div className="loader-container-tour-details">
+                  <div className="loader-container-header">
                     <ClipLoader color="#ff5f10" loading={loading} size={100} />
                   </div>
 
@@ -245,31 +234,31 @@ const Header = () => {
             </ul>
           </li>
 
-
+          
           <li className="nav-item">
             <NavLink to="/about" onClick={() => { closeMenu(); handleScrollToTop(); }}
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              className={({ isActive }) => isActive && openDropdown === null ? "nav-link active" : "nav-link"}>
               About
             </NavLink>
           </li>
 
           <li className="nav-item">
             <NavLink to="/contact" onClick={() => { closeMenu(); handleScrollToTop(); }}
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              className={({ isActive }) => isActive && openDropdown === null ? "nav-link active" : "nav-link"}>
               Contact Us
             </NavLink>
           </li>
 
           <li className="nav-item">
             <NavLink to="/blogs" onClick={() => { closeMenu(); handleScrollToTop(); }}
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              className={({ isActive }) => isActive && openDropdown === null ? "nav-link active" : "nav-link"}>
               Blogs
             </NavLink>
           </li>
 
           <li className="nav-item">
             <NavLink to="/termCondition" onClick={() => { closeMenu(); handleScrollToTop(); }}
-              className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>
+              className={({ isActive }) => isActive && openDropdown === null ? "nav-link active" : "nav-link"}>
               T&C
             </NavLink>
           </li>
