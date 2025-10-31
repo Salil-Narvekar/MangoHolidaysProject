@@ -7,22 +7,34 @@ import ClipLoader from "react-spinners/ClipLoader";
 
 const Header = () => {
   const [internationalToursList, setInternationalToursList] = useState([]);
+  const [customizedToursList, setCustomizedToursList] = useState([]);
   const [indiaToursList, setIndiaToursList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchTours() {
       try {
-        // --- Fetch International Tours ---
+        
+        // --- WORLD TOURS --- 
         const worldParams = { ProductType: "World" };
         const worldData = await getProductList(worldParams);
 
-        const worldSectors = worldData.ProductList.map((item) => item.SectorName);
-        const uniqueWorldSectors = [...new Set(worldSectors)].sort((a, b) => a.localeCompare(b));
-        setInternationalToursList(uniqueWorldSectors);
-        // console.log("International Sectors:", uniqueWorldSectors);
+        // --- Fetch International Tours (GIT) ---
+        const internationalTours = worldData.ProductList.filter(item => item.TravelType === "GIT");
+        const gitSectors = internationalTours.map(item => item.SectorName);
+        const uniqueGitSectors = [...new Set(gitSectors)].sort((a, b) => a.localeCompare(b));
+        setInternationalToursList(uniqueGitSectors);
+        // console.log("International Sectors:", uniqueGitSectors, uniqueGitSectors.length);
 
-        // --- Fetch India Tours ---
+        // --- Fetch Customized Tours (FIT) ---
+        const customizedTours = worldData.ProductList.filter(item => item.TravelType === "FIT");
+        const fitSectors = customizedTours.map(item => item.SectorName);
+        const uniqueFitSectors = [...new Set(fitSectors)].sort((a, b) => a.localeCompare(b));
+        setCustomizedToursList(uniqueFitSectors);
+        // console.log("Customized Sectors:", uniqueFitSectors, uniqueFitSectors.length);
+
+
+        // --- INDIA TOURS ---
         const indiaParams = { ProductType: "India" };
         const indiaData = await getProductList(indiaParams);
 
@@ -110,10 +122,7 @@ const Header = () => {
                     internationalToursList.map((tour, index) => (
                       <li key={index}>
                         <NavLink
-                          // to={`/package-details/${tour.ProductID}/${tour.ProductCode}`}
-                          to={`packages/internation-tour/${tour
-                            .toLowerCase()
-                            .replace(/\s+/g, "-")}`}
+                          to={`packages/internation-tour/${tour.toLowerCase().replace(/\s+/g, "-")}`}
                           onClick={() => {
                             closeMenu();
                             handleScrollToTop();
@@ -181,6 +190,56 @@ const Header = () => {
                     :
                     <li>
                       <span className="no-tour-text">India Tours unavailable</span>
+                    </li>
+              }
+            </ul>
+          </li>
+
+          {/* Dropdown 3 */}
+          <li className="nav-item dropdown">
+            <button
+              className="nav-link"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleScrollToTop();
+                if (window.innerWidth <= 992) {
+                  const dropdown = e.currentTarget.nextElementSibling;
+                  dropdown.classList.toggle("show");
+                  e.currentTarget.classList.toggle("open");
+                }
+              }}
+            >
+              Customized Tours <i className="fa-solid fa-chevron-down"></i>
+            </button>
+
+            <ul className="dropdown-menu">
+              {
+                loading ? (
+                  <div className="loader-container-tour-details">
+                    <ClipLoader color="#ff5f10" loading={loading} size={100} />
+                  </div>
+
+                ) :
+
+                  customizedToursList.length > 0 ?
+                    customizedToursList.map((tour, index) => (
+                      <li key={index}>
+                        <NavLink
+                          to={`packages/customized-tour/${tour.toLowerCase().replace(/\s+/g, "-")}`}
+                          onClick={() => {
+                            closeMenu();
+                            handleScrollToTop();
+                          }}
+                          className="dropdown-link"
+                        >
+                          <span>-</span>
+                          {tour}
+                        </NavLink>
+                      </li>
+                    ))
+                    :
+                    <li>
+                      <span className="no-tour-text">Customized Tours unavailable</span>
                     </li>
               }
             </ul>

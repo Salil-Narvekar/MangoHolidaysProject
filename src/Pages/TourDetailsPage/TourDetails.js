@@ -35,7 +35,8 @@ const TourDetails = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [tourDetails, setTourDetails] = useState([]);
     const [priceDetails, setPriceDetails] = useState([]);
-    const [modalPricingDetails, setModalPricingDetails] = useState([]);
+    const [tourDetailID, setTourDetailID] = useState(null);
+    const [tourCode, setTourCode] = useState(null);
     const [loading, setLoading] = useState(true);
 
     // Tour's Details API Extraction
@@ -50,13 +51,30 @@ const TourDetails = () => {
                     String(packageId),
                     String(packageCode)
                 );
-                // console.log(data)
+                // console.log("Raw Tour details: ",data)
 
                 if (!data || data.StatusCode !== "200" || data.StatusMessage === "Product not found") {
                     console.warn("Invalid response or no data found");
                     setTourDetails([]);
                     return;
                 }
+
+                const updatedUpcomingTours = Array.isArray(data?.UpcomingTours) ? data.UpcomingTours.map((detail) => {
+                    if (!detail?.ArrivalDate) return detail;
+
+                    // Handle "DD/MM/YYYY" format safely
+                    const [day, month, year] = detail.ArrivalDate.split("/").map(Number);
+                    const dateObj = new Date(year, month - 1, day);
+
+                    return {
+                        ...detail,
+                        BookingDateFromMonth: dateObj.toLocaleString("en-US", { month: "short" }), // e.g. "Apr"
+                        BookingDateFromYear: dateObj.getFullYear(),                                // e.g. 2026
+                        BookingDateFromDay: dateObj.getDate(),                                     // e.g. 15
+                        BookingDateFromDayName: dateObj.toLocaleString("en-US", { weekday: "short" }) // e.g. "Wed"
+                    };
+                }) : [];
+
 
                 const extractedDetails = {
                     ProductID: data?.ProductID || null,
@@ -73,7 +91,7 @@ const TourDetails = () => {
                     ProductSliderImages: data?.ProductSliderImages,
                     ProductPricingHeader: data?.ProductPricingHeader || [],
                     RelatedProducts: data?.RelatedProducts || [],
-                    UpcomingTours: data?.UpcomingTours || [],
+                    UpcomingTours: updatedUpcomingTours,
 
                     // --- Mapped Text Arrays ---
                     productFeatures: Array.isArray(data?.ProductFeatures)
@@ -133,6 +151,7 @@ const TourDetails = () => {
                                 : []
                         )
                         : [],
+
                 };
 
                 // console.log("Extracted Tour Details:", data);
@@ -151,14 +170,14 @@ const TourDetails = () => {
 
     // --- Price Details API Extraction ---
     useEffect(() => {
-        if (!packageId || !packageCode) return;
+        if (!tourDetailID || !tourCode) return;
 
         async function fetchPriceDetails() {
             setLoading(true);
             try {
                 const data = await getTourPricingDetails(
-                    String(packageId),
-                    String(packageCode)
+                    parseInt(tourDetailID),
+                    String(tourCode)
                 );
                 // console.log("Raw Price Data:", data);
 
@@ -168,92 +187,40 @@ const TourDetails = () => {
                     return;
                 }
 
-                const extractedPriceDetails = {
-                    TourCode: data?.TourCode,
-                    TourDetailID: data?.TourDetailID,
+                const flattenedPriceDetails = Array.isArray(data?.TourPricingHeaders)
+                    ? data.TourPricingHeaders.flatMap((header) =>
+                        Array.isArray(header?.TourPricingDetails)
+                            ? header.TourPricingDetails.map((detail) => ({
+                                Amount1: detail?.Amount1 ?? null,
+                                Amount1INRValue: detail?.Amount1INRValue ?? null,
+                                Amount2: detail?.Amount2 ?? null,
+                                Amount2INRValue: detail?.Amount2INRValue ?? null,
+                                Amount3: detail?.Amount3 ?? null,
+                                Amount3INRValue: detail?.Amount3INRValue ?? null,
+                                Amount4: detail?.Amount4 ?? null,
+                                Amount4INRValue: detail?.Amount4INRValue ?? null,
 
-                    // TourPricingHeaders (array)
-                    TourPricingHeaders: Array.isArray(data?.TourPricingHeaders)
-                        ? data.TourPricingHeaders.map((header) => {
+                                CurrencyCode1: detail?.CurrencyCode1 || "",
+                                CurrencyCode1SellingRate: detail?.CurrencyCode1SellingRate ?? null,
 
-                            // To Extract day, month, year from the string
-                            const [fromDay, fromMonth, fromYear] = header?.BookingDateFromStr?.split("/") || [];
-                            const [toDay, toMonth, toYear] = header?.BookingDateToStr?.split("/") || [];
+                                CurrencyCode2: detail?.CurrencyCode2 || "",
+                                CurrencyCode2SellingRate: detail?.CurrencyCode2SellingRate ?? null,
 
-                            // Convert to Date objects
-                            const fromDate = fromYear && fromMonth && fromDay ? new Date(fromYear, fromMonth - 1, fromDay) : null;
-                            const toDate = toYear && toMonth && toDay ? new Date(toYear, toMonth - 1, toDay) : null;
+                                CurrencyCode3: detail?.CurrencyCode3 || "",
+                                CurrencyCode3SellingRate: detail?.CurrencyCode3SellingRate ?? null,
 
-                            // Extract month names - Jun / Feb
-                            const fromMonthName = fromDate && fromDate.toLocaleString("en-US", { month: "short" });
-                            const toMonthName = toDate && toDate.toLocaleString("en-US", { month: "short" });
+                                CurrencyCode4: detail?.CurrencyCode4 || "",
+                                CurrencyCode4SellingRate: detail?.CurrencyCode4SellingRate ?? null,
 
-                            // Extract weekday names - Wed / Tue
-                            const fromDayName = fromDate && fromDate.toLocaleString("en-US", { weekday: "short" });
-                            const toDayName = toDate && toDate.toLocaleString("en-US", { weekday: "short" });
+                                RoomOccupancyCode: detail?.RoomOccupancyCode || "",
+                                TotalINRValue: detail?.TotalINRValue ?? null,
+                            }))
+                            : []
+                    )
+                    : [];
 
-                            return {
-                                BookingDateFromStr: header?.BookingDateFromStr,
-                                BookingDateFromDay: fromDay,
-                                BookingDateFromMonth: fromMonthName,
-                                BookingDateFromYear: fromYear,
-                                BookingDateFromDayName: fromDayName,
-
-                                BookingDateToStr: header?.BookingDateToStr,
-                                BookingDateToDay: toDay,
-                                BookingDateToMonth: toMonthName,
-                                BookingDateToYear: toYear,
-                                BookingDateToDayName: toDayName,
-
-                                BookingSequenceFrom: header?.BookingSequenceFrom,
-                                BookingSequenceTo: header?.BookingSequenceTo,
-                                CurrencyCombinationName: header?.CurrencyCombinationName,
-                                GroupSizeFrom: header?.GroupSizeFrom,
-                                GroupSizeTo: header?.GroupSizeTo,
-                                GuestType: header?.GuestType,
-                                MealPlan: header?.MealPlan,
-                                PriceBand: header?.PriceBand,
-                                RoomCategory: header?.RoomCategory,
-                                StartingLocation: header?.StartingLocation,
-                                VehicleType: header?.VehicleType,
-                                TourPricingHeaderID: header?.TourPricingHeaderID,
-
-                                // Nested Tour Pricing Details
-                                TourPricingDetails: Array.isArray(header?.TourPricingDetails)
-                                    ? header.TourPricingDetails.map((detail) => ({
-                                        Amount1: detail?.Amount1 ?? null,
-                                        Amount1INRValue: detail?.Amount1INRValue ?? null,
-                                        Amount2: detail?.Amount2 ?? null,
-                                        Amount2INRValue: detail?.Amount2INRValue ?? null,
-                                        Amount3: detail?.Amount3 ?? null,
-                                        Amount3INRValue: detail?.Amount3INRValue ?? null,
-                                        Amount4: detail?.Amount4 ?? null,
-                                        Amount4INRValue: detail?.Amount4INRValue ?? null,
-
-                                        CurrencyCode1: detail?.CurrencyCode1 || "",
-                                        CurrencyCode1SellingRate: detail?.CurrencyCode1SellingRate ?? null,
-
-                                        CurrencyCode2: detail?.CurrencyCode2 || "",
-                                        CurrencyCode2SellingRate: detail?.CurrencyCode2SellingRate ?? null,
-
-                                        CurrencyCode3: detail?.CurrencyCode3 || "",
-                                        CurrencyCode3SellingRate: detail?.CurrencyCode3SellingRate ?? null,
-
-                                        CurrencyCode4: detail?.CurrencyCode4 || "",
-                                        CurrencyCode4SellingRate: detail?.CurrencyCode4SellingRate ?? null,
-
-                                        RoomOccupancyCode: detail?.RoomOccupancyCode || "",
-                                        TotalINRValue: detail?.TotalINRValue ?? null,
-                                    }))
-                                    : [],
-                            };
-                        })
-                        : [],
-
-                };
-
-                // console.log("Extracted Price Details:", extractedPriceDetails);
-                setPriceDetails(extractedPriceDetails);
+                console.log("Extracted Price Details:", flattenedPriceDetails);
+                setPriceDetails(flattenedPriceDetails);
 
             } catch (err) {
                 console.error("Failed to load tour pricing details:", err.message);
@@ -263,7 +230,7 @@ const TourDetails = () => {
         }
 
         fetchPriceDetails();
-    }, [packageId, packageCode]);
+    }, [tourDetailID, tourCode]);
 
 
     const openModal = (type) => {
@@ -414,6 +381,16 @@ const TourDetails = () => {
         document.body.style.overflow = modalType ? "hidden" : "auto";
     }, [modalType]);
 
+
+    const openPriceModal = (detail) => {
+        // console.log(detail.TourCode, detail.TourDetailID)
+        setModalType("dates-details");
+        setTimeout(() => setIsModalVisible(true), 10);
+
+        setTourCode(detail.TourCode)
+        setTourDetailID(detail.TourDetailID)
+    }
+
     return (
         <>
             {/* Banner Section */}
@@ -553,12 +530,11 @@ const TourDetails = () => {
                                             </div>
 
                                         ) :
-                                            Array.isArray(priceDetails?.TourPricingHeaders) && (priceDetails.TourPricingHeaders).length > 0 ?
+                                            Array.isArray(tourDetails?.UpcomingTours) && (tourDetails.UpcomingTours).length > 0 ?
                                                 <div>
                                                     <h2>Select Tour Date</h2>
                                                     {
-
-                                                        priceDetails.TourPricingHeaders.map((detail, index) => (
+                                                        tourDetails.UpcomingTours.map((detail, index) => (
                                                             <div className="dates-container" key={index}>
                                                                 <div className="price-card">
                                                                     <div className="date-box">
@@ -572,7 +548,8 @@ const TourDetails = () => {
                                                                             <h3 className="day">{detail.BookingDateFromDayName} - {detail.BookingDateFromDay}</h3>
                                                                             <hr />
                                                                             <p className="amount">
-                                                                                {
+                                                                                {detail?.UpcomingTourPricingDetails[0]?.TotalINRValue.toLocaleString("en-IN")}
+                                                                                {/* {
                                                                                     detail?.TourPricingDetails && detail.TourPricingDetails.length > 0
                                                                                         ? `₹ ${Math.min(
                                                                                             ...detail.TourPricingDetails
@@ -580,16 +557,14 @@ const TourDetails = () => {
                                                                                                 .filter((v) => !isNaN(v))
                                                                                         ).toLocaleString("en-IN")}`
                                                                                         : ""
-                                                                                }
+                                                                                } */}
                                                                             </p>
                                                                         </div>
 
                                                                         <button
                                                                             className="view-price-btn"
                                                                             onClick={() => {
-                                                                                setModalType("dates-details");
-                                                                                setTimeout(() => setIsModalVisible(true), 10);
-                                                                                setModalPricingDetails(detail.TourPricingDetails)
+                                                                                openPriceModal(detail ? detail : []);
                                                                             }}
                                                                         >
                                                                             <p>View Price</p>
@@ -939,7 +914,7 @@ const TourDetails = () => {
                                             <div className="dates-details-modal-content">
                                                 <h2>Package Details</h2>
                                                 <hr />
-                                                <h1>Tour Code: {priceDetails.TourCode}</h1>
+                                                <h1>Tour Code: {tourCode}</h1>
 
                                                 {
                                                     loading ? (
@@ -949,7 +924,7 @@ const TourDetails = () => {
                                                         </div>
 
                                                     ) :
-                                                        modalPricingDetails.length > 0 ?
+                                                        priceDetails.length > 0 ?
                                                             <>
                                                                 <div className="table-wrapper">
                                                                     <table>
@@ -967,12 +942,12 @@ const TourDetails = () => {
                                                                         <tbody>
                                                                             {/* Dynamic Currency Rows */}
                                                                             {(() => {
-                                                                                if (!modalPricingDetails || modalPricingDetails.length === 0) return null;
+                                                                                if (!priceDetails || priceDetails.length === 0) return null;
 
                                                                                 // Extract unique currency codes (CurrencyCode1 to 4)
                                                                                 const currencyCodes = [
                                                                                     ...new Set(
-                                                                                        modalPricingDetails.flatMap((item) => [
+                                                                                        priceDetails.flatMap((item) => [
                                                                                             item.CurrencyCode1,
                                                                                             item.CurrencyCode2,
                                                                                             item.CurrencyCode3,
@@ -996,7 +971,7 @@ const TourDetails = () => {
                                                                                         <td><p>{currency}</p></td>
 
                                                                                         {roomTypes.map((type) => {
-                                                                                            const item = modalPricingDetails.find(
+                                                                                            const item = priceDetails.find(
                                                                                                 (d) => d.RoomOccupancyCode === type
                                                                                             );
 
@@ -1031,7 +1006,7 @@ const TourDetails = () => {
                                                                             <tr className="total-row">
                                                                                 <td><p>Total in INR</p></td>
                                                                                 {["Twin Sharing", "Triple Sharing", "Single Occupancy", "Child With Bed", "Infant"].map((type) => {
-                                                                                    const item = modalPricingDetails.find(
+                                                                                    const item = priceDetails.find(
                                                                                         (d) => d.RoomOccupancyCode === type
                                                                                     );
                                                                                     return (
@@ -1051,8 +1026,8 @@ const TourDetails = () => {
 
                                                                 <div className="notes">
                                                                     {/* Dynmaic Currency conversion Note */}
-                                                                    {modalPricingDetails && modalPricingDetails.length > 0 && (() => {
-                                                                        const detail = modalPricingDetails[0];
+                                                                    {priceDetails && priceDetails.length > 0 && (() => {
+                                                                        const detail = priceDetails[0];
                                                                         const currencies = [];
 
                                                                         for (let i = 2; i <= 4; i++) {
@@ -1074,14 +1049,14 @@ const TourDetails = () => {
 
 
                                                                     {/* Dynamic Minimum Pricing with its category Note */}
-                                                                    {modalPricingDetails && modalPricingDetails.length > 0 && (() => {
+                                                                    {priceDetails && priceDetails.length > 0 && (() => {
                                                                         // Find the minimum TotalINRValue
                                                                         const minPrice = Math.min(
-                                                                            ...modalPricingDetails.map((detail) => Number(detail.TotalINRValue) || Infinity)
+                                                                            ...priceDetails.map((detail) => Number(detail.TotalINRValue) || Infinity)
                                                                         );
 
                                                                         // Find the corresponding occupancy type for that min price
-                                                                        const minDetail = modalPricingDetails.find(
+                                                                        const minDetail = priceDetails.find(
                                                                             (detail) => Number(detail.TotalINRValue) === minPrice
                                                                         );
 
