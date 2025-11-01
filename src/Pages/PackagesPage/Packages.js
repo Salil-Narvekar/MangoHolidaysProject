@@ -94,7 +94,7 @@ const Packages = () => {
                     ProductType: currentProductType,
                     SectorName: tourLocation,
                 });
-                // console.log("Raw Data:", data, currentProductType, tourLocation, tourType);
+                console.log("Raw Data:", data, currentProductType, tourLocation, tourType);
 
                 if (!data?.ProductList || !Array.isArray(data.ProductList)) {
                     console.warn("No tours found or invalid data structure");
@@ -105,7 +105,7 @@ const Packages = () => {
                 const today = new Date();
                 // Group by SectorName
                 const groupedData = data.ProductList.reduce((acc, item) => {
-                    const { SectorName, ProductID, ProductCode, ProductTitle, Days, Nights, ProductPricingHeader, ProductImage, TravelType } = item;
+                    const { SectorName, ProductID, ProductCode, ProductTitle, Days, Nights, ProductPricingHeader, ProductImage, TravelType, LowestTwinSharingPrice } = item;
                     let matchedNetINRValue = null;
 
                     if (Array.isArray(ProductPricingHeader)) {
@@ -135,6 +135,7 @@ const Packages = () => {
                         ProductPricingHeader,
                         NETINRValue: matchedNetINRValue,
                         TravelType,
+                        LowestTwinSharingPrice,
                     });
 
                     return acc;
@@ -185,7 +186,6 @@ const Packages = () => {
                 <div className="container">
                     {
                         loading ? (
-
                             <div className="loader-container">
                                 <ClipLoader color="#ff5f10" loading={loading} size={100} />
                                 <p className="loading-text">Fetching tours...</p>
@@ -208,7 +208,17 @@ const Packages = () => {
                                                 <h3>{pkg.ProductTitle}</h3>
                                                 <p>{pkg.Days} days | {pkg.Nights} nights</p>
                                                 <div className="price-bar">
-                                                    <h3>{pkg.NETINRValue && '₹ ' + Number(pkg.NETINRValue).toLocaleString("en-IN")}</h3>
+                                                    {/* <h3>{pkg.NETINRValue && '₹ ' + Number(pkg.NETINRValue).toLocaleString("en-IN")}</h3> */}
+                                                    {/* <h3>{pkg.LowestTwinSharingPrice && '₹ ' + Number(pkg.LowestTwinSharingPrice).toLocaleString("en-IN")}</h3> */}
+                                                    <h3>
+                                                        {
+                                                            pkg.LowestTwinSharingPrice ?
+                                                                '₹ ' + Number(pkg.LowestTwinSharingPrice).toLocaleString("en-IN")
+                                                                : pkg.NETINRValue ?
+                                                                    '₹ ' + Number(pkg.NETINRValue).toLocaleString("en-IN")
+                                                                    : ""
+                                                        }
+                                                    </h3>
                                                     <NavLink
                                                         to={`/tour-details/${pkg.ProductID}/${pkg.ProductCode}/${pkg.ProductTitle.toLowerCase().replace(/\s+/g, "-")}`}
                                                         onClick={handleScrollToTop}

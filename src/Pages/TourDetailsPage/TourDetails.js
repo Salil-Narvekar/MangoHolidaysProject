@@ -51,7 +51,7 @@ const TourDetails = () => {
                     String(productId),
                     String(productCode)
                 );
-                console.log("Raw Tour details: ", data)
+                // console.log("Raw Tour details: ", data)
 
                 if (!data || data.StatusCode !== "200" || data.StatusMessage === "Product not found") {
                     console.warn("Invalid response or no data found");
@@ -556,16 +556,14 @@ const TourDetails = () => {
                                                                             <h3 className="day">{detail.BookingDateFromDayName} - {detail.BookingDateFromDay}</h3>
                                                                             <hr />
                                                                             <p className="amount">
-                                                                                {detail?.UpcomingTourPricingDetails[0]?.TotalINRValue.toLocaleString("en-IN")}
-                                                                                {/* {
-                                                                                    detail?.TourPricingDetails && detail.TourPricingDetails.length > 0
-                                                                                        ? `₹ ${Math.min(
-                                                                                            ...detail.TourPricingDetails
-                                                                                                .map((d) => Number(d?.TotalINRValue))
-                                                                                                .filter((v) => !isNaN(v))
+                                                                                {
+                                                                                    detail?.UpcomingTourPricingDetails && detail.UpcomingTourPricingDetails.length > 0 ?
+                                                                                        `₹ ${Math.min(
+                                                                                            ...(detail?.UpcomingTourPricingDetails?.map(item => item.TotalINRValue) || [])
                                                                                         ).toLocaleString("en-IN")}`
-                                                                                        : ""
-                                                                                } */}
+                                                                                        :
+                                                                                        "--"
+                                                                                }
                                                                             </p>
                                                                         </div>
 
