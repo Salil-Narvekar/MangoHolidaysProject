@@ -7,41 +7,6 @@ import "./packages.css";
 import { getProductList } from "../../API/mangoholidayAPI"
 
 
-// const tourPackages = [
-//     {
-//         id: 1,
-//         title: "Spain Portugal",
-//         days: "13",
-//         nights: "12",
-//         price: "3,37,015",
-//         img: "/img/dubai-abu-dhabi.webp",
-//     },
-//     {
-//         id: 2,
-//         title: "Spain Portugal",
-//         days: "13",
-//         nights: "12",
-//         price: "3,37,015",
-//         img: "/img/dubai-abu-dhabi.webp",
-//     },
-//     {
-//         id: 3,
-//         title: "Spain Portugal",
-//         days: "13",
-//         nights: "12",
-//         price: "3,37,015",
-//         img: "/img/dubai-abu-dhabi.webp",
-//     },
-//     {
-//         id: 4,
-//         title: "Spain Portugal",
-//         days: "13",
-//         nights: "12",
-//         price: "3,37,015",
-//         img: "/img/dubai-abu-dhabi.webp",
-//     }
-// ];
-
 const Packages = () => {
 
     const { "tour-type": type, location } = useParams();
@@ -94,7 +59,7 @@ const Packages = () => {
                     ProductType: currentProductType,
                     SectorName: tourLocation,
                 });
-                console.log("Raw Data:", data, currentProductType, tourLocation, tourType);
+                // console.log("Raw Data:", data, currentProductType, tourLocation, tourType);
 
                 if (!data?.ProductList || !Array.isArray(data.ProductList)) {
                     console.warn("No tours found or invalid data structure");
@@ -154,7 +119,7 @@ const Packages = () => {
                     toursToShow = toursToShow.filter((tour) => tour.TravelType === "FIT");
                 }
 
-                console.log("Grouped Tours:", toursToShow.length, toursToShow);
+                // console.log("Grouped Tours:", toursToShow.length, toursToShow);
                 setTourPackages(toursToShow);
 
             } catch (err) {
