@@ -68,7 +68,7 @@ const best_selling = [
     nights: '7'
   },
   {
-    navigationLink: "#",
+    navigationLink: "523/NL/northern-lights",
     img: "/img/BestSelling/Northern-Lights.webp",
     ProductTitle: "Northern Lights",
     days: '9',
@@ -128,7 +128,7 @@ const upcoming_international_tours = [
     ProductTitle: "Africa with Kenyan Migration"
   },
   {
-    navigationLink: "#",
+    navigationLink: "523/NL/northern-lights",
     img: "/img/LuxeHolidays/northern-Lights.webp",
     ProductTitle: "Northern Lights"
   },
