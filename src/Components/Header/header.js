@@ -175,7 +175,7 @@ const Header = () => {
             >
               {loading ? (
                 <div className="loader-container-header">
-                  <ClipLoader color="#ff5f10" loading={loading} size={100} />
+                  <ClipLoader color="#ff5f10" loading={loading} size={80} />
                 </div>
               ) : internationalToursList.length > 0 ? (
                 internationalToursList.map((tour, index) => (
@@ -205,11 +205,10 @@ const Header = () => {
             </ul>
           </li>
 
-          {/* Dropdown 2 - India Tours */}
+          {/* Dropdown 2 - India Tours (remove hide to show this dropdown)*/}
           <li className="nav-item dropdown hide">
             <button
-              className={`nav-link ${openDropdown === "india" ? "open active" : ""
-                }`}
+              className={`nav-link ${openDropdown === "india" ? "open active" : ""}`}
               aria-expanded={openDropdown === "india"}
               aria-haspopup="true"
               onClick={(e) => toggleDropdown("india", e)}
@@ -223,7 +222,7 @@ const Header = () => {
             >
               {loading ? (
                 <div className="loader-container-header">
-                  <ClipLoader color="#ff5f10" loading={loading} size={100} />
+                  <ClipLoader color="#ff5f10" loading={loading} size={80} />
                 </div>
               ) : indiaToursList.length > 0 ? (
                 indiaToursList.map((tour, index) => (
@@ -263,69 +262,46 @@ const Header = () => {
             </button>
 
             <ul className={`dropdown-menu-customized ${openDropdown === "customized" ? "show" : ""}`}>
+
+              {/* LEFT COLUMN – Tour Types */}
+              <div className="tour-type-list">
+                <div
+                  className={`tour-type-item ${activeTourTab === "world" ? "active" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveTourTab("world");
+                  }}
+                >
+                  World Tours
+                </div>
+                <div
+                  className={`tour-type-item ${activeTourTab === "india" ? "active" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveTourTab("india");
+                  }}
+                >
+                  India Tours
+                </div>
+              </div>
+
               {loading ? (
                 <div className="loader-container-header">
-                  <ClipLoader color="#ff5f10" loading={loading} size={100} />
+                  <ClipLoader color="#ff5f10" loading={loading} size={80} />
                 </div>
               ) : (
-                <>
-                  {/* LEFT COLUMN – Tour Types */}
-                  <div className="tour-type-list">
-                    <div
-                      className={`tour-type-item ${activeTourTab === "world" ? "active" : ""}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveTourTab("world");
-                      }}
-                    >
-                      World Tours
-                    </div>
-                    <div
-                      className={`tour-type-item ${activeTourTab === "india" ? "active" : ""}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setActiveTourTab("india");
-                      }}
-                    >
-                      India Tours
-                    </div>
-                  </div>
-
-                  {/* RIGHT COLUMN – Tour Listings */}
-                  <div className="tour-listing">
-                    {activeTourTab === "india" ? (
-                      customizedIndiaToursList.length > 0 ? (
-                        customizedIndiaToursList.map((tour, index) => (
-                          <li key={index}>
-                            <NavLink
-                              to={`packages/customized-tour/${tour
-                                .toLowerCase()
-                                .replace(/\s+/g, "-")}`}
-                              onClick={() => {
-                                // close dropdown when actually navigating
-                                closeMenu();
-                                handleScrollToTop();
-                              }}
-                              className="dropdown-link"
-                            >
-                              <span>-</span>
-                              {tour}
-                            </NavLink>
-                          </li>
-                        ))
-                      ) : (
-                        <li>
-                          <span className="no-tour-text">India Tours unavailable</span>
-                        </li>
-                      )
-                    ) : customizedToursList.length > 0 ? (
-                      customizedToursList.map((tour, index) => (
+                // RIGHT COLUMN – Tour Listings
+                <div className="tour-listing">
+                  {activeTourTab === "india" ? (
+                    customizedIndiaToursList.length > 0 ? (
+                      customizedIndiaToursList.map((tour, index) => (
                         <li key={index}>
                           <NavLink
                             to={`packages/customized-tour/${tour
                               .toLowerCase()
                               .replace(/\s+/g, "-")}`}
                             onClick={() => {
+                              // close dropdown when actually navigating
                               closeMenu();
                               handleScrollToTop();
                             }}
@@ -338,11 +314,33 @@ const Header = () => {
                       ))
                     ) : (
                       <li>
-                        <span className="no-tour-text">World Tours unavailable</span>
+                        <span className="no-tour-text">India Tours unavailable</span>
                       </li>
-                    )}
-                  </div>
-                </>
+                    )
+                  ) : customizedToursList.length > 0 ? (
+                    customizedToursList.map((tour, index) => (
+                      <li key={index}>
+                        <NavLink
+                          to={`packages/customized-tour/${tour
+                            .toLowerCase()
+                            .replace(/\s+/g, "-")}`}
+                          onClick={() => {
+                            closeMenu();
+                            handleScrollToTop();
+                          }}
+                          className="dropdown-link"
+                        >
+                          <span>-</span>
+                          {tour}
+                        </NavLink>
+                      </li>
+                    ))
+                  ) : (
+                    <li>
+                      <span className="no-tour-text">World Tours unavailable</span>
+                    </li>
+                  )}
+                </div>
               )}
             </ul>
           </li>

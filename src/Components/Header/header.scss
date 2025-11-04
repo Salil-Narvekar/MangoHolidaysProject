@@ -4,9 +4,8 @@
 .loader-container-header {
   position: relative;
   width: 100%;
-  height: 60vh;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
   text-align: center;
@@ -243,9 +242,9 @@
 
   .dropdown-menu-customized {
     position: absolute;
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    width: 320px;
+    display: none !important;
+    grid-template-columns: 1.5fr 2fr;
+    width: 420px;
     top: 100%;
     left: 0;
     background: $hover_bg_color;
@@ -255,26 +254,29 @@
     overflow: hidden;
     z-index: 99;
     line-height: 1.6 !important;
-    display: none;
 
     // LEFT COLUMN — Fixed section
     .tour-type-list {
       background: $hover_bg_color;
+      border-right: 1px solid #ccc;
+      height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      padding: 4px 0;
       position: sticky;
       top: 0;
       align-self: start;
 
       .tour-type-item {
-        padding: 8px 12px;
+        padding: 12px 12px;
+        border-bottom: 1px solid #ccc;
         cursor: pointer;
         font-size: 15px;
         font-weight: 600 !important;
         color: $text-color-dark;
         transition: all 0.2s ease;
+        text-align: left;
+        font-family: "Outfit", sans-serif !important;
 
         &:hover {
           color: $Secondary_green_color;
@@ -349,7 +351,12 @@
     }
 
     &.show {
-      display: grid;
+      display: grid !important;
+      animation: fadeIn 0.2s ease;
+    }
+
+    &.hide {
+      display: none !important;
       animation: fadeIn 0.2s ease;
     }
   }
@@ -613,7 +620,8 @@
       .dropdown-menu-customized {
         position: relative;
         width: 100%;
-        border: none;
+        padding-left: 0 !important;
+        border: 1px solid #ccc !important;
         box-shadow: none;
         background: none;
         display: none;
