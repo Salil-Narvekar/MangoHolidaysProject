@@ -23,6 +23,7 @@ import TourTalks from "./Pages/TourTalksPage/TourTalks";
 import Testimonials from "./Pages/TestimonialsPage/Testimonials";
 import BlogDetails from "./Pages/BlogDetailsPage/BlogDetails";
 import Luxetours from "./Pages/LuxetoursPage/Luxetours";
+import Search from "./Pages/SearchPage/Search";
 import PageNotFound from "./Pages/PageNotFound/PageNotFound";
 
 function App() {
@@ -51,6 +52,8 @@ function App() {
             <Route path="/packages/:tour-type/:location" element={<Packages />} />
             <Route path="/tour-details/:product-id/:product-code/:product-title" element={<TourDetails />} />
             
+            <Route path="/search/:search-elements" element={<Search />} />
+
             <Route path="/404" element={<PageNotFound />} />
             <Route path="*" element={<Navigate to="/404" />} />
           </Routes>

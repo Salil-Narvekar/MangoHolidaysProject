@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import "./header.scss";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { getProductList } from "../../API/mangoholidayAPI";
 import ClipLoader from "react-spinners/ClipLoader";
 
 const Header = () => {
+  const navigate = useNavigate();
   const [internationalToursList, setInternationalToursList] = useState([]);
   const [customizedToursList, setCustomizedToursList] = useState([]);
   const [indiaToursList, setIndiaToursList] = useState([]);
@@ -91,6 +92,7 @@ const Header = () => {
     // optionally close dropdown when closing the menu
     if (menuOpen) setOpenDropdown(null);
   };
+
   const closeMenu = () => {
     setMenuOpen(false);
     setOpenDropdown(null);
@@ -115,6 +117,25 @@ const Header = () => {
     document.addEventListener("click", handleDocClick);
     return () => document.removeEventListener("click", handleDocClick);
   }, []);
+
+
+  // Search Bar functionality
+  const [query, setQuery] = useState("");
+  
+  const searchFunction = () => {
+    handleScrollToTop()
+    if (query.trim()) {
+      navigate(`/search/${query}`);
+    } else {
+      navigate("/")
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      searchFunction();
+    }
+  };
 
   return (
     <header className={`header-container ${menuOpen ? "menu-open" : ""}`}>
@@ -421,6 +442,10 @@ const Header = () => {
             placeholder="Eg: Europe"
             className="search-input"
             aria-label="Search destination"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            maxLength={40}
           />
           <button className="search-button" aria-label="Search">
             <i className="fa-solid fa-magnifying-glass"></i>

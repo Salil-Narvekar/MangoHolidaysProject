@@ -243,7 +243,7 @@ const TourDetails = () => {
             )
           : [];
 
-        console.log("Extracted Price Details:", flattenedPriceDetails);
+        // console.log("Extracted Price Details:", flattenedPriceDetails);
         setPriceDetails(flattenedPriceDetails);
       } catch (err) {
         console.error("Failed to load tour pricing details:", err.message);
@@ -448,7 +448,8 @@ const TourDetails = () => {
     setTourCode(detail.TourCode);
     setTourDetailID(detail.TourDetailID);
   };
-  console.log("tourdetails", tourDetails);
+  // console.log("tourdetails", tourDetails);
+
   return (
     <>
       {/* Banner Section */}

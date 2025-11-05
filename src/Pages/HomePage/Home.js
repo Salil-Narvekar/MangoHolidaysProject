@@ -256,7 +256,7 @@ const Home = () => {
           (item) => item.IsBestSelling === true && item.TravelType === "GIT"
         );
 
-        console.log("Best-Selling GIT Tours:", bestSellingGITTours);
+        // console.log("Best-Selling GIT Tours:", bestSellingGITTours);
         setBestSellers(bestSellingGITTours);
 
       } catch (err) {
